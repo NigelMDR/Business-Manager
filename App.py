@@ -33,10 +33,10 @@ B2.metric("Bank_debt", bank_debt-monthly_payment)
 
 col1, col2, col3, col4, col5 = st.columns(5)
 col5.metric("Employee 5", str(round(E5*employee_pay)),str(round((E1*(1-employee_pay)),2))+'S')
-col3.metric("Employee 3", str(round(E3*employee_pay)),str(round((E1*(1-employee_pay)),2))+'S')
-col4.metric("Employee 4", str(round(E4*employee_pay)),str(round((E1*(1-employee_pay)),2))+'S')
-col1.metric("Employee 1", str(round(E1*employee_pay)),str(round((E1*(1-employee_pay)),2))+'S')
-col2.metric("Employee 2", str(round(E2*employee_pay)),str(round((E1*(1-employee_pay)),2))+'S')
+col3.metric("Employee 3", str(round(E3*employee_pay)),str(round((E2*(1-employee_pay)),2))+'S')
+col4.metric("Employee 4", str(round(E4*employee_pay)),str(round((E3*(1-employee_pay)),2))+'S')
+col1.metric("Employee 1", str(round(E1*employee_pay)),str(round((E4*(1-employee_pay)),2))+'S')
+col2.metric("Employee 2", str(round(E2*employee_pay)),str(round((E5*(1-employee_pay)),2))+'S')
 
 
 
