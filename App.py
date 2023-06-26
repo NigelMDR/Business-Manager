@@ -6,15 +6,15 @@ st.set_page_config(layout="wide")
 
 with st.sidebar:
   revenue = st.number_input('Ingreso', value=14777.24)
-  operating_expenses = st.number_input('Los gastos de explotación', value=1088.64)
+  operating_expenses = st.number_input('Los Gastos Operativos', value=1088.64)
   tax = st.slider("Impuesto %",0,27, value=27)/100
-  employee_pay = st.slider("Pago de empleados %",0,100, value=74)/100
+  employee_pay = st.slider("Pago de Empleados %",0,100, value=74)/100
   E1 = st.number_input('Empleado 1', value=1380)
   E2 = st.number_input('Empleado 2', value=1595)
   E3 = st.number_input('Empleado 3', value=2000)
   E4 = st.number_input('Empleado 4', value=1500)
   E5 = st.number_input('Empleado 5', value=800)
-  bank_debt = st.number_input('Deuda bancaria', value=82000)
+  bank_debt = st.number_input('Deuda Bancaria', value=82000)
   monthly_payment = st.number_input('Mensualidad', value=4313)
 
 
@@ -23,13 +23,13 @@ with st.sidebar:
 # employee_pay = .70
 
 col11, col22, col33 = st.columns(3)
-col11.metric("Después del impuesto de la compañía", round(revenue*(1-tax),2) , str(-1*tax*100)+"%")
-col22.metric("Después de los gastos operativos", round(revenue*(1-tax)-operating_expenses,2) , str(round(-1*operating_expenses/(revenue*(1-tax))*100,2))+"%")
-col33.metric("Después del salario de los empleados", round(revenue*(1-tax)-operating_expenses-employee_cost,2) , str(round(-1*employee_cost/(revenue*(1-tax)-operating_expenses)*100,2))+"%")
+col11.metric("Después del Impuesto de la Compañía", round(revenue*(1-tax),2) , str(-1*tax*100)+"%")
+col22.metric("Después de los Gastos Operativos", round(revenue*(1-tax)-operating_expenses,2) , str(round(-1*operating_expenses/(revenue*(1-tax))*100,2))+"%")
+col33.metric("Después del Salario de los Empleados", round(revenue*(1-tax)-operating_expenses-employee_cost,2) , str(round(-1*employee_cost/(revenue*(1-tax)-operating_expenses)*100,2))+"%")
 
 B1, B2, B3 = st.columns(3)
-B1.metric("Después Pago bancario", round(revenue*(1-tax)-operating_expenses-employee_cost-monthly_payment,2) , str(round((revenue*(1-tax)-operating_expenses-employee_cost-monthly_payment)/(revenue*(1-tax)-operating_expenses-employee_cost)*100, 2))+"%")
-B2.metric("Deuda bancaria", bank_debt-monthly_payment)
+B1.metric("Después del Pago Bancario", round(revenue*(1-tax)-operating_expenses-employee_cost-monthly_payment,2) , str(round((revenue*(1-tax)-operating_expenses-employee_cost-monthly_payment)/(revenue*(1-tax)-operating_expenses-employee_cost)*100, 2))+"%")
+B2.metric("Deuda Bancaria", bank_debt-monthly_payment)
 
 col1, col2, col3, col4, col5 = st.columns(5)
 col5.metric("Empleado 5", str(round(E5*employee_pay)),str(round((E1*(1-employee_pay)),2))+'S')
