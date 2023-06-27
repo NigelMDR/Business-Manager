@@ -115,10 +115,7 @@ col1n.metric('Costo Operativo',str(stats['Operating Cost']['#']) + 'S', str(stat
 col2n.metric('Costo del Empleado',str(stats['Employee Cost']['#']) + 'S', str(stats['Employee Cost']['%']) + '%', delta_color='off')
 col3n.metric('Deuda Bancaria',str(stats['Bank Debt']['#']) + 'S', str(stats['Bank Debt']['%']) + '%', delta_color='off')
 
-employee_cost = business.tot_employee_salary
-revenue = stats['revenue']['#']
-
-fx = lambda x: x*(1-tax)*(1-employee_cost/(revenue-cost))
+fx = lambda x: x*(1-tax)*(1-stats['Operating Cost']['%']/100)*(1-stats['Employee Cost']['%']/100)
 fx2 = lambda x: x*.27
 fx3 = lambda x: x+1
 
@@ -150,7 +147,7 @@ y4 = [fx2(x) for x in range(-1,25000)]
 x4 = [fx3(x) for x in range(-1,25000)]
 
 p = figure(
-    title='simple line example',
+    title='Informe de meses basados en proyección',
     x_axis_label='x',
     y_axis_label='y',
     )
@@ -160,11 +157,22 @@ p = figure(
 #              label=['hi', 'lo', 'hi', 'lo', 'hi', 'lo']
 #              )
 
-p.line(x1, y1, line_width=2, color= 'navy', legend_label='fx')
-p.line(x2, y2, line_width=2, color= 'red', legend_label='Bounds ' + str(bounds))
+p.line(x1, y1, line_width=2, color= 'navy', legend_label='Proyección')
+p.line(x2, y2, line_width=2, color= 'red', legend_label='Límites ' + str(bounds))
 # p.line(x22, y22, line_width=2, color= 'green', legend_label='income')
-p.line(x3, y3, line_width=2, color= 'black', legend_label='Goal ' + str(monthly_debt))
+p.line(x3, y3, line_width=2, color= 'black', legend_label='Meta ' + str(monthly_debt))
 # p.line(x4, y4, line_width=2, color= 'black', legend_label='Tax')
 
+code = '''
+     impuestos = 0.27
+     Ganancia = ingreso*(1-impuesto)
+     Costo operativo = (Ganancia - Costo) / Ganancia 
+     Costo del empleado = (Ganancia - salario total del empleado) / Ganancia 
+     Proyección(x) = x*(1 - impuesto)*(1 - costo operativo)*(1 - Costo del empleado)
+     Beneficio Bruto = Ganancia - Costo - salario total del empleado
+     Margen de beneficio bruto = Beneficio Bruto / Ganancia
+     Ingresos Netos = Beneficio Bruto - Deuda bancaria mensual
+    '''
+st.code(code, language='ltex')
 
 st.bokeh_chart(p)
