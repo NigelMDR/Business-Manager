@@ -3,6 +3,7 @@ import numpy as np
 import streamlit as st
 import pandas as pd
 from bokeh.plotting import figure
+from bokeh import *
 
 st.set_page_config(layout="wide")
 
