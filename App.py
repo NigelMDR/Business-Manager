@@ -67,12 +67,29 @@ class Business:
     temp_percent = round((1-temp/temp2)*100,2)
     self.stats['Bank Debt'] = {'#': self.tot_debt - self.monthly_debt, 
                                 '%': temp_percent if temp > 0 else -1*temp_percent}
+    
+    self.stats['Employees Salary'] = self.tot_employee_salary
     return self.stats
   
   def __str__(self):
     self.get_stats()
     return self.name + '/n' + str(self.employee) + str(self.stats)
     
+
+def step_function(const: None, step, max):
+  arr = [0]*max
+  if const:
+    i = 0
+    for x in range(max):
+      arr[x] = const
+      
+  else:
+    i = 0
+    for x in range(max):
+      arr[x] = i
+      i += step
+  
+  return arr
 
 with st.sidebar:  
   income = st.number_input('Ingreso', value=14777.24)
@@ -116,41 +133,43 @@ col1n.metric('Costo Operativo',str(stats['Operating Cost']['#']) + 'S', str(stat
 col2n.metric('Costo del Empleado',str(stats['Employee Cost']['#']) + 'S', str(stats['Employee Cost']['%']) + '%', delta_color='off')
 col3n.metric('Deuda Bancaria',str(stats['Bank Debt']['#']) + 'S', str(stats['Bank Debt']['%']) + '%', delta_color='off')
 
-fx = lambda x: x*(1-tax)*(1-stats['Operating Cost']['%']/100)*(1-stats['Employee Cost']['%']/100)
+fx = lambda x: x*(stats['gross profit']['%']/100)
 fx2 = lambda x: x*.27
 fx3 = lambda x: x+1
 
-x1 = [fx3(x) for x in range(1,25000)]
-y1 = [fx(val) for val in range(1,25000)]
+x1 = step_function(None,0.1, 500000)
+y1 = []
+i = 0
+for x in x1:
+  y1.append(fx(x))
 
 bounds = 0
-
 temp = y1[::-1]
 for val in temp:
-  if val < monthly_debt:
+  if val <= stats['gross profit']['#']:
     bounds = x1[y1.index(val)]
     break;
     
     
-
 # Verticle Line
-x2 = [bounds for val in range(-1,25000)]
+
+x2 = [stats['revenue']['#'] for val in range(-1,25000)]
 y2 = [fx3(x) for x in range(-1,25000)]
 
-x22 = [income for val in range(-1,25000)]
+x22 = [stats['revenue'] for val in range(-1,25000)]
 y22 = [fx3(x) for x in range(-1,25000)]
 
 # Horizontal line
 x3 = [fx3(x) for x in range(-1,25000)]
 y3 = [monthly_debt for val in range(-1,25000)]
 
-y4 = [fx2(x) for x in range(-1,25000)]
 x4 = [fx3(x) for x in range(-1,25000)]
+y4 = [stats['gross profit']['#'] for x in range(-1,25000)]
 
 p = figure(
     title='Informe de meses basados en proyección',
-    x_axis_label='x',
-    y_axis_label='y',
+    x_axis_label='Beneficio neto',
+    y_axis_label='Beneficio Bruto',
     )
 
 # p.multi_line([x1,x2,x22,x3,x4], [y1,y2,y22,y3,y4],
@@ -159,10 +178,12 @@ p = figure(
 #              )
 
 p.line(x1, y1, line_width=2, color= 'navy', legend_label='Proyección')
-p.line(x2, y2, line_width=2, color= 'red', legend_label='Límites ' + str(bounds))
+p.line(x2, y2, line_width=2, color= 'red', legend_label='Ganancia')
 # p.line(x22, y22, line_width=2, color= 'green', legend_label='income')
 p.line(x3, y3, line_width=2, color= 'black', legend_label='Meta ' + str(monthly_debt))
-# p.line(x4, y4, line_width=2, color= 'black', legend_label='Tax')
+p.line(x4, y4, line_width=2, color= 'green', legend_label='Beneficio Bruto', line_dash='dashed')
+
+
 
 code = '''
      impuestos = 0.27
