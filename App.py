@@ -171,7 +171,7 @@ p = figure(
     y_axis_label='Beneficio Bruto',
     )
 
-# p.line(x1, y1, line_width=2, color= 'navy', legend_label='Proyección')
+p.line(x1, y1, line_width=2, color= 'navy', legend_label='Proyección')
 p.line(x2, y2, line_width=2, color= 'red', legend_label='Ganancia')
 p.line(x3, y3, line_width=2, color= 'black', legend_label='Meta ' + str(monthly_debt))
 p.line(x4, y4, line_width=2, color= 'green', legend_label='Beneficio Bruto', line_dash='dashed')
