@@ -2,6 +2,7 @@
 import numpy as np
 import streamlit as st
 import pandas as pd
+from bokeh.plotting import figure
 
 st.set_page_config(layout="wide")
 
@@ -117,10 +118,53 @@ col3n.metric('Deuda Bancaria',str(stats['Bank Debt']['#']) + 'S', str(stats['Ban
 employee_cost = business.tot_employee_salary
 revenue = stats['revenue']['#']
 
-fx = lambda x: x*(1-tax)*(1-employee_cost/revenue)
-y = [fx(val) for val in range(25000)]
-chart_data = pd.DataFrame(
-    y,
-    columns=['a'])
+fx = lambda x: x*(1-tax)*(1-employee_cost/(revenue-cost))
+fx2 = lambda x: x*.27
+fx3 = lambda x: x+1
 
-st.line_chart(chart_data)
+x1 = [fx3(x) for x in range(1,25000)]
+y1 = [fx(val) for val in range(1,25000)]
+
+bounds = 0
+
+temp = y1[::-1]
+for val in temp:
+  if val < monthly_debt:
+    bounds = x1[y1.index(val)]
+    break;
+    
+    
+
+# Verticle Line
+x2 = [bounds for val in range(-1,25000)]
+y2 = [fx3(x) for x in range(-1,25000)]
+
+x22 = [income for val in range(-1,25000)]
+y22 = [fx3(x) for x in range(-1,25000)]
+
+# Horizontal line
+x3 = [fx3(x) for x in range(-1,25000)]
+y3 = [monthly_debt for val in range(-1,25000)]
+
+y4 = [fx2(x) for x in range(-1,25000)]
+x4 = [fx3(x) for x in range(-1,25000)]
+
+p = figure(
+    title='simple line example',
+    x_axis_label='x',
+    y_axis_label='y',
+    )
+
+# p.multi_line([x1,x2,x22,x3,x4], [y1,y2,y22,y3,y4],
+#              color=["firebrick", "navy", "green", "red", "black"], line_width=1,
+#              label=['hi', 'lo', 'hi', 'lo', 'hi', 'lo']
+#              )
+
+p.line(x1, y1, line_width=2, color= 'navy', legend_label='fx')
+p.line(x2, y2, line_width=2, color= 'red', legend_label='Bounds ' + str(bounds))
+# p.line(x22, y22, line_width=2, color= 'green', legend_label='income')
+p.line(x3, y3, line_width=2, color= 'black', legend_label='Goal ' + str(monthly_debt))
+# p.line(x4, y4, line_width=2, color= 'black', legend_label='Tax')
+
+
+st.bokeh_chart(p)
