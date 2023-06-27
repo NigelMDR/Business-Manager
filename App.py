@@ -137,7 +137,7 @@ fx = lambda x: x*(stats['gross profit']['%']/100)
 fx2 = lambda x: x*.27
 fx3 = lambda x: x+1
 
-x1 = step_function(None,1, 500000)
+x1 = step_function(None,1, 25000)
 y1 = []
 i = 0
 for x in x1:
