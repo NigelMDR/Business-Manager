@@ -137,7 +137,7 @@ fx = lambda x: x*(stats['gross profit']['%']/100)
 fx2 = lambda x: x*.27
 fx3 = lambda x: x+1
 
-x1 = step_function(None,1, 25000)
+x1 = [fx3(x) for x in range(-1,25000)]
 y1 = []
 i = 0
 for x in x1:
@@ -149,7 +149,6 @@ for val in temp:
   if val <= stats['gross profit']['#']:
     bounds = x1[y1.index(val)]
     break;
-    
     
 # Verticle Line
 
@@ -172,14 +171,8 @@ p = figure(
     y_axis_label='Beneficio Bruto',
     )
 
-# p.multi_line([x1,x2,x22,x3,x4], [y1,y2,y22,y3,y4],
-#              color=["firebrick", "navy", "green", "red", "black"], line_width=1,
-#              label=['hi', 'lo', 'hi', 'lo', 'hi', 'lo']
-#              )
-
 p.line(x1, y1, line_width=2, color= 'navy', legend_label='Proyección')
 p.line(x2, y2, line_width=2, color= 'red', legend_label='Ganancia')
-# p.line(x22, y22, line_width=2, color= 'green', legend_label='income')
 p.line(x3, y3, line_width=2, color= 'black', legend_label='Meta ' + str(monthly_debt))
 p.line(x4, y4, line_width=2, color= 'green', legend_label='Beneficio Bruto', line_dash='dashed')
 
@@ -194,7 +187,6 @@ code = '''
      Beneficio Bruto = Ganancia - Costo - salario total del empleado
      Margen de beneficio bruto = Beneficio Bruto / Ganancia
      Ingresos Netos = Beneficio Bruto - Deuda bancaria mensual
-     test
     '''
 st.code(code, language='ltex')
 
