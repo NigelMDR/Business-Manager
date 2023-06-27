@@ -194,6 +194,7 @@ code = '''
      Beneficio Bruto = Ganancia - Costo - salario total del empleado
      Margen de beneficio bruto = Beneficio Bruto / Ganancia
      Ingresos Netos = Beneficio Bruto - Deuda bancaria mensual
+     test
     '''
 st.code(code, language='ltex')
 
