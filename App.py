@@ -116,23 +116,23 @@ stats = business.get_stats()
 employee = business.get_employees()
 
 col1, col2, col3 = st.columns(3)
-col1.metric('Ganancia', str(stats['revenue']['#']) + 'S', str(stats['revenue']['%']) + '%')
-col2.metric('Beneficio Bruto', str(stats['gross profit']['#']) + 'S', str(stats['gross profit']['%']) + '%')
-col3.metric('Ingresos Netos', str(stats['net income']['#']) + 'S', str(stats['net income']['%']) + '%')
+col1.metric(':chart_with_downwards_trend: Ganancia', str(stats['revenue']['#']) + 'S', str(stats['revenue']['%']) + '%')
+col2.metric(':bar_chart: Beneficio Bruto', str(stats['gross profit']['#']) + 'S', str(stats['gross profit']['%']) + '%')
+col3.metric(':chart_with_upwards_trend: Ingresos Netos', str(stats['net income']['#']) + 'S', str(stats['net income']['%']) + '%')
 st.write('_______')
 
 coll1, coll2, coll3, coll4, coll5 = st.columns(5)
-coll1.metric('Empleado 1', str(employee['A']['Salary']) + 'S',str(employee['A']['diff']) + 'S',delta_color='off' )
-coll2.metric('Empleado 2', str(employee['C']['Salary']) + 'S',str(employee['D']['diff']) + 'S',delta_color='off' )
-coll3.metric('Empleado 3', str(employee['B']['Salary']) + 'S',str(employee['B']['diff']) + 'S',delta_color='off' )
-coll4.metric('Empleado 4', str(employee['D']['Salary']) + 'S',str(employee['C']['diff']) + 'S',delta_color='off' )
-coll5.metric('Empleado 5', str(employee['E']['Salary']) + 'S',str(employee['E']['diff']) + 'S',delta_color='off' )
+coll1.metric(':male-technologist: Empleado 1', str(employee['A']['Salary']) + 'S',str(employee['A']['diff']) + 'S',delta_color='off' )
+coll2.metric(':male-office-worker: Empleado 2', str(employee['C']['Salary']) + 'S',str(employee['D']['diff']) + 'S',delta_color='off' )
+coll3.metric(':male-technologist: Empleado 3', str(employee['B']['Salary']) + 'S',str(employee['B']['diff']) + 'S',delta_color='off' )
+coll4.metric(':male-office-worker: Empleado 4', str(employee['D']['Salary']) + 'S',str(employee['C']['diff']) + 'S',delta_color='off' )
+coll5.metric(':male-technologist: Empleado 5', str(employee['E']['Salary']) + 'S',str(employee['E']['diff']) + 'S',delta_color='off' )
 st.write('_______')
 
 col1n, col2n, col3n = st.columns(3)
-col1n.metric('Costo Operativo',str(stats['Operating Cost']['#']) + 'S', str(stats['Operating Cost']['%']) + '%', delta_color='off')
-col2n.metric('Costo del Empleado',str(stats['Employee Cost']['#']) + 'S', str(stats['Employee Cost']['%']) + '%', delta_color='off')
-col3n.metric('Deuda Bancaria',str(stats['Bank Debt']['#']) + 'S', str(stats['Bank Debt']['%']) + '%', delta_color='off')
+col1n.metric(':bar_chart: Costo Operativo',str(stats['Operating Cost']['#']) + 'S', str(stats['Operating Cost']['%']) + '%', delta_color='off')
+col2n.metric(':bar_chart: Costo del Empleado',str(stats['Employee Cost']['#']) + 'S', str(stats['Employee Cost']['%']) + '%', delta_color='off')
+col3n.metric(':bar_chart: Deuda Bancaria',str(stats['Bank Debt']['#']) + 'S', str(stats['Bank Debt']['%']) + '%', delta_color='off')
 
 # fx = lambda x: ((x*(1-tax))*(1-stats['Operating Cost']['%']/100))*(1-stats['Employee Cost']['%']/100)
 fx = lambda x: x*stats['gross profit']['%']/100
@@ -169,6 +169,7 @@ p = figure(
     title='Informe de meses basados en proyección',
     x_axis_label='Ganancia',
     y_axis_label='Beneficio Bruto',
+    sizing_mode="stretch_width",
     )
 
 low_box = BoxAnnotation(top=monthly_debt, fill_alpha=0.2, fill_color='red')
@@ -186,6 +187,10 @@ p.line(x4, y4, line_width=2, color= 'green', legend_label='Beneficio Bruto', lin
 #                    x_start=fx(objective), y_start=0, 
 #                    x_end=fx(objective), y_end= fx(objective)))
 
+
+# d = {'col1': y1, 'col2': y4, 'col3': x4}
+# chart_data = pd.DataFrame(data=d)
+# st.line_chart(chart_data)
 
 st.bokeh_chart(p)
 
