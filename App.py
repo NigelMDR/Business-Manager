@@ -7,7 +7,7 @@ from bokeh.models import NumeralTickFormatter
 from Business import *
 
 st.set_page_config(layout="wide")
-st.title('Descripción :blue[General]')
+st.title('Estado :blue[Financiero]')
 # ---------------------------------------------------------------------------- #
 #                                Get User Input                                #
 # ---------------------------------------------------------------------------- #
