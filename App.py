@@ -202,8 +202,8 @@ code = '''
      ingresos brutos = x*(1-tax) - (Los Gastos Operativos) - (salario total del empleado)
      
      # intercept = (punto cuando "Margen de ingresos brutos = Mensualidad")
-     # umbral = intercept + intercept*(1-tax)
-     % expected increase to reach threshold = (umbral - ingreso)/umbral
+     # umbral = intercept/(1-tax)
+     % porcentaje esperado para alcanzar el umbral = (umbral - ingreso)/umbral
      
     '''
 st.code(code, language='html')
