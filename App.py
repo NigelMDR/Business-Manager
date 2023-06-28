@@ -1,98 +1,20 @@
-
 import numpy as np
 import streamlit as st
 import pandas as pd
 from bokeh.plotting import figure
 from bokeh.models import BoxAnnotation, Arrow
-# from bokeh import *
+from bokeh.models import NumeralTickFormatter
+from Business import *
 
 st.set_page_config(layout="wide")
-
-class Business:
-  def __init__(self, name, income, cost, tax, employee_tax, tot_debt, monthly_debt):
-    self.name = name
-    self.employee = {}
-    self.id = 1
-    self.income = income
-    self.cost = cost
-    self.tax = tax
-    self.employee_tax = employee_tax
-    self.tot_debt = tot_debt
-    self.monthly_debt = monthly_debt
-    self.tot_employee_salary = 0
-    self.tot_employee_contribution = 0
-    
-  def add_employee(self, Name:str, Contribution: float):
-    salary = round(Contribution*self.employee_tax,2)
-    self.employee[Name] = {'Salary': salary, 'Tax': self.employee_tax, 'Contribution': Contribution, 'diff': round(Contribution-salary,2)}
-    self.tot_employee_salary += Contribution*self.employee_tax # Employee salary
-    self.tot_employee_contribution += Contribution
-    self.id += 1
-  
-  def delete_employee(self, Name):
-    del self.employee[Name.lower()]
-    
-  def get_employees(self):
-    return self.employee
-    
-  def get_stats(self):
-    self.stats = {}
-    temp = 0
-    self.stats['revenue'] = {'#': round(self.income*(1-self.tax),2),
-                             '%': -1*self.tax*100}
-    # It is typically used to evaluate how efficiently a company is managing labor and supplies in production
-    self.stats['gross profit'] = {'#': round(self.stats['revenue']['#'] - self.cost - self.tot_employee_salary,2), 
-                                  '%': round((self.stats['revenue']['#'] - self.cost - self.tot_employee_salary)/abs(self.stats['revenue']['#'])*100,2)}
-    # % = gross profit_margin above
-    # self.stats['gross profit_margin'] = {'%': round(self.stats['gross profit']['#']/self.stats['revenue']['#']*100,2)}
-                                        
-    # Net Income aka bottom line
-    temp = round(self.stats['gross profit']['#'] - self.monthly_debt,2)
-    self.stats['net income'] = {'#': temp, 
-                                '%': round(temp/abs(self.stats['gross profit']['#'])*100,2)}
-  
-    # Individual parts: what % of Revenue is spent on each
-    temp = round(self.stats['revenue']['#'] - self.cost, 2)
-    temp2 = round(self.stats['revenue']['#'],2)
-    temp_percent = round((1-temp/temp2)*100,2)
-    
-    self.stats['Operating Cost'] = {'#': self.cost, 
-                                  '%': temp_percent if temp > 0 else -1*temp_percent}
-    
-    temp = round(temp2 - self.tot_employee_salary, 2)
-    temp_percent = round((1-temp/temp2)*100,2)
-    self.stats['Employee Cost'] = {'#': self.tot_employee_salary, 
-                                  '%': temp_percent if temp > 0 else -1*temp_percent}
-    
-    temp = round(temp2 - self.monthly_debt,2)
-    temp_percent = round((1-temp/temp2)*100,2)
-    self.stats['Bank Debt'] = {'#': self.tot_debt - self.monthly_debt, 
-                                '%': temp_percent if temp > 0 else -1*temp_percent}
-    
-    self.stats['Employees Salary'] = self.tot_employee_salary
-    return self.stats
-  
-  def __str__(self):
-    self.get_stats()
-    return self.name + '/n' + str(self.employee) + str(self.stats)
-    
-
-def step_function(const: None, step, max):
-  arr = [0]*max
-  if const:
-    i = 0
-    for x in range(max):
-      arr[x] = const
-      
-  else:
-    i = 0
-    for x in range(max):
-      arr[x] = i
-      i += step
-  
-  return arr
+st.title('Descripción :blue[General]')
+# ---------------------------------------------------------------------------- #
+#                                Get User Input                                #
+# ---------------------------------------------------------------------------- #
 
 with st.sidebar:  
+  st.title(':blue[ _Negocio_ ] Estadísticas :bar_chart:')
+
   income = st.number_input('Ingreso', value=14777.24)
   cost = st.number_input('Los Gastos Operativos', value=1088.64)
   tax = st.slider("Impuesto %",0,27, value=27)/100
@@ -104,7 +26,10 @@ with st.sidebar:
   E5 = st.number_input('Empleado 5', value=800)
   tot_debt = st.number_input('Deuda Bancaria', value=82000)
   monthly_debt = st.number_input('Mensualidad', value=4313)
-  
+
+# ---------------------------------------------------------------------------- #
+#                              Use Business Class                              #
+# ---------------------------------------------------------------------------- #
   
 business = Business('David',income, cost,tax, employee_tax, tot_debt, monthly_debt)
 business.add_employee('A', E1)
@@ -114,6 +39,10 @@ business.add_employee('D', E4)
 business.add_employee('E', E5)
 stats = business.get_stats()
 employee = business.get_employees()
+
+# ---------------------------------------------------------------------------- #
+#                               Display Statistic                              #
+# ---------------------------------------------------------------------------- #
 
 col1, col2, col3 = st.columns(3)
 col1.metric(':chart_with_downwards_trend: Ganancia', str(stats['revenue']['#']) + 'S', str(stats['revenue']['%']) + '%')
@@ -133,6 +62,10 @@ col1n, col2n, col3n = st.columns(3)
 col1n.metric(':bar_chart: Costo Operativo',str(stats['Operating Cost']['#']) + 'S', str(stats['Operating Cost']['%']) + '%', delta_color='off')
 col2n.metric(':bar_chart: Costo del Empleado',str(stats['Employee Cost']['#']) + 'S', str(stats['Employee Cost']['%']) + '%', delta_color='off')
 col3n.metric(':bar_chart: Deuda Bancaria',str(stats['Bank Debt']['#']) + 'S', str(stats['Bank Debt']['%']) + '%', delta_color='off')
+
+# ---------------------------------------------------------------------------- #
+#                                   Graphing                                   #
+# ---------------------------------------------------------------------------- #
 
 # fx = lambda x: ((x*(1-tax))*(1-stats['Operating Cost']['%']/100))*(1-stats['Employee Cost']['%']/100)
 fx = lambda x: x*stats['gross profit']['%']/100
@@ -170,29 +103,29 @@ p = figure(
     x_axis_label='Ganancia',
     y_axis_label='Beneficio Bruto',
     sizing_mode="stretch_width",
+    tooltips="(@x, @y)",
+    x_range=(0, income+1000),
+    y_range=(0, fx(income)),
+    height=400,
     )
 
 low_box = BoxAnnotation(top=monthly_debt, fill_alpha=0.2, fill_color='red')
 p.add_layout(low_box)
 
-
 p.line(x1, y1, line_width=2, color= 'navy', legend_label='Proyección')
 p.line(x2, y2, line_width=2, color= 'red', legend_label='Ganancia', line_dash='dashed')
 p.line(x4, y4, line_width=2, color= 'green', legend_label='Beneficio Bruto', line_dash='dashed')
 
-# objective = st.number_input('Objetivo del Próximo mes', value=income)
-# p.circle(objective, fx(objective) , size=10, line_color= 'blue', legend_label='Interception' + str(fx(objective)), )
 
-# p.add_layout(Arrow(line_dash=[15, 5],
-#                    x_start=fx(objective), y_start=0, 
-#                    x_end=fx(objective), y_end= fx(objective)))
-
-
-# d = {'col1': y1, 'col2': y4, 'col3': x4}
-# chart_data = pd.DataFrame(data=d)
-# st.line_chart(chart_data)
+p.xaxis.ticker = [0, income, stats['revenue']['#']]
+p.yaxis.ticker = [0, stats['gross profit']['#'] ]
+p.toolbar_location = "below"
 
 st.bokeh_chart(p)
+
+# ---------------------------------------------------------------------------- #
+#                                     Notes                                    #
+# ---------------------------------------------------------------------------- #
 
 code = '''
      impuestos = 0.27
