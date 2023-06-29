@@ -15,7 +15,7 @@ class Business:
   def add_employee(self, Name:str, Contribution: float):
     salary = round(Contribution*self.employee_tax,2)
     self.employee[Name] = {'Salary': salary, 'Tax': self.employee_tax, 'Contribution': Contribution, 'diff': round(Contribution-salary,2)}
-    self.tot_employee_salary += Contribution*self.employee_tax # Employee salary
+    self.tot_employee_salary += round(Contribution*self.employee_tax,2) # Employee salary
     self.tot_employee_contribution += Contribution
     self.id += 1
   
@@ -44,20 +44,22 @@ class Business:
     # Individual parts: what % of Revenue is spent on each
     temp = round(self.stats['revenue']['#'] - self.cost, 2)
     temp2 = round(self.stats['revenue']['#'],2)
-    temp_percent = round((1-temp/temp2)*100,2)
+    temp_percent = round((temp2-temp)/temp2*100,2)
     
     self.stats['Operating Cost'] = {'#': self.cost, 
                                   '%': temp_percent if temp > 0 else -1*temp_percent}
     
     temp = round(temp2 - self.tot_employee_salary, 2)
-    temp_percent = round((1-temp/temp2)*100,2)
-    self.stats['Employee Cost'] = {'#': self.tot_employee_salary, 
+    temp_percent = round((temp2-temp)/temp2*100,2)
+    self.stats['Employee Cost'] = {'#': round(self.tot_employee_salary,2), 
                                   '%': temp_percent if temp > 0 else -1*temp_percent}
     
     temp = round(temp2 - self.monthly_debt,2)
-    temp_percent = round((1-temp/temp2)*100,2)
+    temp_percent = round((temp2-temp)/temp2*100,2)
     self.stats['Bank Debt'] = {'#': self.tot_debt - self.monthly_debt, 
                                 '%': temp_percent if temp > 0 else -1*temp_percent}
+    
+    self.stats['status'] = self.stats['Operating Cost']['%'] + self.stats['Employee Cost']['%'] + self.stats['Bank Debt']['%']
     
     self.stats['Employees Salary'] = self.tot_employee_salary
     return self.stats

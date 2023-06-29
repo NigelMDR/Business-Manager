@@ -17,14 +17,14 @@ with st.sidebar:
   income = st.number_input('Ingreso', value=14777.24)
   cost = st.number_input('Los Gastos Operativos', value=1088.64)
   tax = st.slider("Impuesto %",0,27, value=27)/100
-  employee_tax = st.slider("Pago de Empleados %",0,100, value=74)/100
+  employee_tax = st.slider("Pago de Empleados %",0.0,100.0, value=74.0, step=0.1)/100
   E1 = st.number_input('Empleado 1', value=1380)
   E2 = st.number_input('Empleado 2', value=1595)
   E3 = st.number_input('Empleado 3', value=2000)
   E4 = st.number_input('Empleado 4', value=1500)
   E5 = st.number_input('Empleado 5', value=800)
   tot_debt = st.number_input('Deuda Bancaria', value=82000)
-  monthly_debt = st.number_input('Mensualidad', value=4313)
+  monthly_debt = st.number_input('Mensualidad | Meta', value=4313)
   projection = st.number_input('Objetivo para el próximo mes', value=income)
 
 # ---------------------------------------------------------------------------- #
@@ -123,17 +123,19 @@ coll4.metric(':male-office-worker: Empleado 4', str(employee['D']['Salary']) + '
 coll5.metric(':male-technologist: Empleado 5', str(employee['E']['Salary']) + 'S',str(employee['E']['diff']) + 'S',delta_color='off' )
 st.write('_______')
 
-col1n, col2n, col3n = st.columns(3)
+col1n, col2n, col3n, col4n = st.columns(4)
 col1n.metric(':bar_chart: Costo Operativo',str(stats['Operating Cost']['#']) + 'S', str(stats['Operating Cost']['%']) + '%', delta_color='off')
 col2n.metric(':bar_chart: Costo del Empleado',str(stats['Employee Cost']['#']) + 'S', str(stats['Employee Cost']['%']) + '%', delta_color='off')
 col3n.metric(':bar_chart: Deuda Bancaria',str(stats['Bank Debt']['#']) + 'S', str(stats['Bank Debt']['%']) + '%', delta_color='off')
 
+if stats['status'] > 100:
+    col4n.metric('👎 Warning', ' ⚠️ ', round(100-stats['status'],2))
+else:
+    col4n.metric('✅ On track','🚀', round(100-stats['status'],2))
+    st.balloons()
 # ---------------------------------------------------------------------------- #
 #                                   Graphing                                   #
 # ---------------------------------------------------------------------------- #
-
-
-
 
 p1 = figure(
     title='Proyección usando el Margen de Ingresos Brutos',
@@ -190,11 +192,14 @@ code = '''
 
      impuestos = 0.27
      # Ganancia = ingreso*(1-impuestos)
-     % Costo operativo = 1 - (Ganancia - (Los Gastos Operativos)) / Ganancia * 100
+     % Costo operativo = (Ganancia - (Ganancia - (Los Gastos Operativos)) / Ganancia * 100
+     
      # salario total del empleado = (Pago de Empleados)/100 * (Empleado 1 +  Empleado 2 + ... + Empleado 5)
-     % Costo del empleado = 1 - (Ganancia - (salario total del empleado)) / Ganancia * 100
+     % Costo del empleado = (Ganancia - (Ganancia - (salario total del empleado)) / Ganancia * 100
+     
      # Beneficio Bruto = Ganancia - (Los Gastos Operativos) - (salario total del empleado)
-     % Margen de beneficio bruto = 1 - (Beneficio Bruto) / Ganancia * 100
+     % Margen de beneficio bruto = (Ganancia - (Beneficio Bruto)) / Ganancia * 100
+     
      # Ingresos Netos = (Beneficio Bruto) - (Deuda bancaria mensual)
      
      x es la variable
