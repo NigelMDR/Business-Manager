@@ -42,7 +42,7 @@ employee = business.get_employees()
 
 def get_data():
   table_xy = {}
-  M = 25000
+  M = income + 500
   
   x = [x for x in range(1,M)]
   fx1 = lambda x: x*stats['gross profit']['%']/100
