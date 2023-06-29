@@ -4,10 +4,11 @@ import pandas as pd
 from bokeh.plotting import figure
 from bokeh.models import BoxAnnotation, Arrow
 from bokeh.models import NumeralTickFormatter
-from Business import *
+from streamlit_extras.metric_cards import style_metric_cards
 
+from Business import *
 st.set_page_config(layout="wide")
-st.title('Estado :blue[Financiero]')
+st.subheader('Estado :blue[Financiero]')
 # ---------------------------------------------------------------------------- #
 #                                Get User Input                                #
 # ---------------------------------------------------------------------------- #
@@ -113,7 +114,9 @@ if table_xy['projection']['x'][0] > table_xy['Gross profit intercept Goal']['x']
 else:
     final = round(table_xy['Gross profit intercept Goal']['x'][0]/(1-tax),2)
     col4.metric(':warning: Umbral',final, round((final-income)/final*100,2))
-st.write('_______')
+
+# st.write('_______')
+st.subheader('Empleado | :blue[Salario]')
 
 coll1, coll2, coll3, coll4, coll5 = st.columns(5)
 coll1.metric(':male-technologist: Empleado 1', str(employee['A']['Salary']) + 'S',str(employee['A']['diff']) + 'S',delta_color='off' )
@@ -121,7 +124,9 @@ coll2.metric(':male-office-worker: Empleado 2', str(employee['C']['Salary']) + '
 coll3.metric(':male-technologist: Empleado 3', str(employee['B']['Salary']) + 'S',str(employee['B']['diff']) + 'S',delta_color='off' )
 coll4.metric(':male-office-worker: Empleado 4', str(employee['D']['Salary']) + 'S',str(employee['C']['diff']) + 'S',delta_color='off' )
 coll5.metric(':male-technologist: Empleado 5', str(employee['E']['Salary']) + 'S',str(employee['E']['diff']) + 'S',delta_color='off' )
-st.write('_______')
+
+# st.write('_______')
+st.subheader('Ganancia | :blue[Distribución]')
 
 col1n, col2n, col3n, col4n = st.columns(4)
 col1n.metric(':bar_chart: Costo Operativo',str(stats['Operating Cost']['#']) + 'S', str(stats['Operating Cost']['%']) + '%', delta_color='off')
@@ -133,6 +138,9 @@ if stats['status'] > 100:
 else:
     col4n.metric('✅ On track','🚀', round(100-stats['status'],2))
     st.balloons()
+style_metric_cards(border_left_color='#2485df', background_color='')
+
+
 # ---------------------------------------------------------------------------- #
 #                                   Graphing                                   #
 # ---------------------------------------------------------------------------- #
@@ -162,6 +170,9 @@ p2 = figure(
     sizing_mode="stretch_width",
     tooltips="(@x, @y)",
     height=400,
+    # background_fill_color = None,
+    # outline_line_color = None,
+    # border_fill_color = None,
     )
 
 p2.toolbar_location = "below"
@@ -177,8 +188,14 @@ p1.add_layout(low_box)
 low_box2 = BoxAnnotation(top=monthly_debt, fill_alpha=0.2, fill_color='red')
 p2.add_layout(low_box2)
 
+
 st.bokeh_chart(p1)
 st.bokeh_chart(p2)
+
+# columns = [table_xy['Gross income']['name'], table_xy['gross profit margin']['name']]
+# data = np.array([table_xy['Gross income']['y'] , table_xy['gross profit margin']['y'] ])
+# df1 = pd.DataFrame(data.T, columns=columns)
+# st.line_chart(df1)
 
 # ---------------------------------------------------------------------------- #
 #                                     Notes                                    #

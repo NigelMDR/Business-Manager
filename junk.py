@@ -6,7 +6,7 @@ table_xy = {}
 arr_x = [1,2,3]
 arr_y = [1,2,3]
 table_xy['gross income'] = {'x': arr_x, 'y': arr_y}
-print(table_xy['gross income'].i)
+print(table_xy['gross income'])
 
 
 arr = [1,2]
@@ -26,3 +26,10 @@ def step_function(const: None, step, max):
       i += step
   
   return arr
+
+columns = ['A','B', 'C']
+data = np.array([[1,2] , [1,5] , [2,3]])
+print(data)
+df_1 = pd.DataFrame(data.T, columns=columns)
+
+print(df_1)
