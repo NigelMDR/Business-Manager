@@ -17,7 +17,7 @@ with st.sidebar:
   income = st.number_input('Ingreso', value=14777.24)
   cost = st.number_input('Los Gastos Operativos', value=1088.64)
   tax = st.slider("Impuesto %",0,27, value=27)/100
-  employee_tax = st.slider("Pago de Empleados %",0.0,100.0, value=74.0, step=0.1)/100
+  employee_tax = st.slider("Pago de Empleados %",0,100, value=74)/100
   E1 = st.number_input('Empleado 1', value=1380)
   E2 = st.number_input('Empleado 2', value=1595)
   E3 = st.number_input('Empleado 3', value=2000)
@@ -132,7 +132,7 @@ if stats['status'] > 100:
     col4n.metric('👎 Warning', ' ⚠️ ', round(100-stats['status'],2))
 else:
     col4n.metric('✅ On track','🚀', round(100-stats['status'],2))
-    st.balloons()
+    # st.balloons()
 # ---------------------------------------------------------------------------- #
 #                                   Graphing                                   #
 # ---------------------------------------------------------------------------- #
