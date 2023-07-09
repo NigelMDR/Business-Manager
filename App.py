@@ -209,7 +209,7 @@ p2.add_layout(low_box2)
 # with st.spinner("Please Wait"):
 #   DEPENDENT on Projection
 #   st.bokeh_chart(p1)
-st.bokeh_chart(p2)
+# st.bokeh_chart(p2)
 # st.success('Done!')
 
 
