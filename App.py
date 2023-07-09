@@ -188,9 +188,11 @@ p1.add_layout(low_box)
 low_box2 = BoxAnnotation(top=monthly_debt, fill_alpha=0.2, fill_color='red')
 p2.add_layout(low_box2)
 
+with st.spinner("Please Wait"):
+  st.bokeh_chart(p1)
+  st.bokeh_chart(p2)
+st.success('Done!')
 
-st.bokeh_chart(p1)
-st.bokeh_chart(p2)
 
 # columns = [table_xy['Gross income']['name'], table_xy['gross profit margin']['name']]
 # data = np.array([table_xy['Gross income']['y'] , table_xy['gross profit margin']['y'] ])
