@@ -17,13 +17,31 @@ with st.sidebar:
   st.title(':blue[ _Negocio_ ] Estadísticas :bar_chart:')
   income = st.number_input('Ingreso', value=14777.24)
   cost = st.number_input('Los Gastos Operativos', value=1088.64)
+  additional_costs = st.number_input('Gastos Adicionales', value=0)
+  cost += additional_costs
+  
   tax = st.slider("Impuesto %",0,27, value=27)/100
   employee_tax = st.slider("Pago de Empleados %",0.0,100.0, value=74.0, step=0.1)/100
-  E1 = st.number_input('Empleado 1', value=1380)
-  E2 = st.number_input('Empleado 2', value=1595)
-  E3 = st.number_input('Empleado 3', value=2000)
-  E4 = st.number_input('Empleado 4', value=1500)
-  E5 = st.number_input('Empleado 5', value=800)
+  col1, col2 = st.columns(2)
+  with col1:
+    E1 = st.number_input('Empleado 1', value=1380)
+    E2 = st.number_input('Empleado 2', value=1595)
+    E3 = st.number_input('Empleado 3', value=2000)
+    E4 = st.number_input('Empleado 4', value=1500)
+    E5 = st.number_input('Empleado 5', value=800)
+  with col2:  
+    offset_E1 = st.number_input('Bono 1', value=0)
+    offset_E2 = st.number_input('Bono 2', value=0)
+    offset_E3 = st.number_input('Bono 3', value=0)
+    offset_E4 = st.number_input('Bono 4', value=0)
+    offset_E5 = st.number_input('Bono 5', value=0)
+    
+  E1 += offset_E1
+  E2 += offset_E2
+  E3 += offset_E3
+  E4 += offset_E4
+  E5 += offset_E5
+    
   tot_debt = st.number_input('Deuda Bancaria', value=82000)
   monthly_debt = st.number_input('Mensualidad | Meta', value=4313)
   projection = st.number_input('Objetivo para el próximo mes', value=income)
@@ -106,9 +124,9 @@ table_xy = get_data()
 # ---------------------------------------------------------------------------- #
 
 col1, col2, col3, col4 = st.columns(4)
-col1.metric(':chart_with_downwards_trend: Ganancia', str(stats['revenue']['#']) + 'S', str(stats['revenue']['%']) + '%')
-col2.metric(':bar_chart: Beneficio Bruto', str(stats['gross profit']['#']) + 'S', str(stats['gross profit']['%']) + '%')
-col3.metric(':chart_with_upwards_trend: Ingresos Netos', str(stats['net income']['#']) + 'S', str(stats['net income']['%']) + '%')
+col1.metric(':chart_with_downwards_trend: Ganancia', str(stats['revenue']['#']) , str(stats['revenue']['%']) + '%')
+col2.metric(':bar_chart: Beneficio Bruto', str(stats['gross profit']['#']) , str(stats['gross profit']['%']) + '%')
+col3.metric(':chart_with_upwards_trend: Ingresos Netos', str(stats['net income']['#']) , str(stats['net income']['%']) + '%')
 if table_xy['projection']['x'][0] > table_xy['Gross profit intercept Goal']['x'][0]:
     col4.metric(':umbrella: Umbral','n/a')
 else:
@@ -119,19 +137,19 @@ else:
 st.subheader('Empleado | :blue[Salario]')
 
 coll1, coll2, coll3, coll4, coll5 = st.columns(5)
-coll1.metric(':male-technologist: Empleado 1', str(employee['A']['Salary']) + 'S',str(employee['A']['diff']) + 'S',delta_color='off' )
-coll2.metric(':male-office-worker: Empleado 2', str(employee['C']['Salary']) + 'S',str(employee['D']['diff']) + 'S',delta_color='off' )
-coll3.metric(':male-technologist: Empleado 3', str(employee['B']['Salary']) + 'S',str(employee['B']['diff']) + 'S',delta_color='off' )
-coll4.metric(':male-office-worker: Empleado 4', str(employee['D']['Salary']) + 'S',str(employee['C']['diff']) + 'S',delta_color='off' )
-coll5.metric(':male-technologist: Empleado 5', str(employee['E']['Salary']) + 'S',str(employee['E']['diff']) + 'S',delta_color='off' )
+coll1.metric(':male-technologist: Empleado 1', str(employee['A']['Salary']) , 's/' + str(employee['A']['diff']) ,delta_color='off' )
+coll2.metric(':male-office-worker: Empleado 2', str(employee['B']['Salary']) , 's/' + str(employee['B']['diff']) ,delta_color='off' )
+coll3.metric(':male-technologist: Empleado 3', str(employee['C']['Salary']) , 's/' + str(employee['C']['diff']) ,delta_color='off' )
+coll4.metric(':male-office-worker: Empleado 4', str(employee['D']['Salary']) , 's/' + str(employee['D']['diff']) ,delta_color='off' )
+coll5.metric(':male-technologist: Empleado 5', str(employee['E']['Salary']) , 's/' + str(employee['E']['diff']) ,delta_color='off' )
 
 # st.write('_______')
 st.subheader('Ganancia | :blue[Distribución]')
 
 col1n, col2n, col3n, col4n = st.columns(4)
-col1n.metric(':bar_chart: Costo Operativo',str(stats['Operating Cost']['#']) + 'S', str(stats['Operating Cost']['%']) + '%', delta_color='off')
-col2n.metric(':bar_chart: Costo del Empleado',str(stats['Employee Cost']['#']) + 'S', str(stats['Employee Cost']['%']) + '%', delta_color='off')
-col3n.metric(':bar_chart: Deuda Bancaria',str(stats['Bank Debt']['#']) + 'S', str(stats['Bank Debt']['%']) + '%', delta_color='off')
+col1n.metric(':bar_chart: Costo Operativo',str(stats['Operating Cost']['#']) , str(stats['Operating Cost']['%']) + '%', delta_color='off')
+col2n.metric(':bar_chart: Costo del Empleado',str(stats['Employee Cost']['#']) , str(stats['Employee Cost']['%']) + '%', delta_color='off')
+col3n.metric(':bar_chart: Deuda Bancaria',str(stats['Bank Debt']['#']) , str(stats['Bank Debt']['%']) + '%', delta_color='off')
 
 if stats['status'] > 100:
     col4n.metric('👎 Warning', ' ⚠️ ', round(100-stats['status'],2))
@@ -189,8 +207,9 @@ low_box2 = BoxAnnotation(top=monthly_debt, fill_alpha=0.2, fill_color='red')
 p2.add_layout(low_box2)
 
 # with st.spinner("Please Wait"):
+#   DEPENDENT on Projection
 #   st.bokeh_chart(p1)
-#   st.bokeh_chart(p2)
+st.bokeh_chart(p2)
 # st.success('Done!')
 
 
@@ -203,6 +222,11 @@ p2.add_layout(low_box2)
 #                                     Notes                                    #
 # ---------------------------------------------------------------------------- #
 
+html = '''
+     
+'''
+
+st.success(' Hello world ')
 
 code = '''
 
